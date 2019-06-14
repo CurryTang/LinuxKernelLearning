@@ -40,3 +40,15 @@
 * /var 包含与邮件、日志等相关的文件,例如local,log,lock
 * /mnt 临时挂载点，缺省挂载点
 * /tmp 存储临时文件
+* linux/arch 存放architecture dependent的文件
+* linux/drivers 驱动设备文件
+* linux/fs Virtual File System,包含super.c, inode.c等等
+* linux/include 一些系统和用户头文件
+* linux/init version.c, main.c main.c里面包含系统entry point
+* linux/ipc 主要实现了semaphore, shared memory与messgae queue
+* linux/kernel 系统内核代码，包括调度等等
+* linux/lib 给kernel code用的library
+* linux/mm 系统内存管理
+* linux/scripts 系统脚本，包括kernel patching等等
+
+### 第二课
