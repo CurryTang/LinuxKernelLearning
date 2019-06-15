@@ -52,3 +52,74 @@
 * linux/scripts 系统脚本，包括kernel patching等等
 
 ### 第二课
+1. Linux的启动过程
+* system startup BIOS
+* MBR, GRUB (Bootloader)
+* Kernel
+* Init(进入user space)
+
+2. 启动的过程（上面的1,2）
+* 开机并且跳转到包含特定BIOS代码的地址
+* BIOS进行开机自检
+* 寻找可启动设备
+* 从MBR中加载和执行启动扇区
+* 启动OS
+
+3. MBR
+主引导记录，存储在硬盘上的第一个sector,包含主引导加载程序
+BIOS在执行后会将控制权转交给MBR
+
+4. MBR的结构
+* Bootloader代码
+* 分区表（逻辑分区）
+* Magic Number
+
+5. Bootloader
+任务：将Kernel Code加载进内存
+常见: GRUB, LILO
+
+6. GRUB启动
+BIOS寻找硬盘，将控制权转交给MBR
+MBR包含GRUB的第一阶段代码，然后负责跳转到第1.5阶段代码
+第1.5阶段代码紧接第一扇区，负责加载第二阶段代码
+第二阶段代码显示控制菜单，将用户选择的kernel版本加载到内存中
+
+7. Kernel代码
+总是存储在内存中，直到关机
+
+8. init过程（进入user space）
+基于SystemV启动系统
+第一个启动的脚本是/etc/rc.d/rc.sysinit
+基于不同的run-level开始执行不同的启动脚本
+第一个进程，init进程，ID为1，启动在inittab中声明的系统进程，启动多个getty实例（零号进程是scheduler）
+
+9. inittab文件
+计算机将启动在/etc/inittab中由initdefault定义的运行级别
+
+10. 运行级别run-level
+0-6
+会根据运行级别启动/etc/rc.d/rc#.d下对应的文件
+
+11. 守护进程
+/etc/init.d/
+这些runlevel脚本启动是整个过程中的最后一步
+
+12.upstart
+事件驱动的启动系统
+新硬件被发现时动态启动任务
+
+13. systemd 
+一个用来管理守护进程的守护进程
+target取代了runlevel的概念
+
+14.源代码
+* 0x7C00
+* bootsector: 0x7C00 -> 0x90000
+* bootsect.S 载入setup.S 然后setup.S跳转到32位保护模式
+* 保护模式下进行初始化idt,gdt,跳转到start_kernel()
+* 保护模式下解压缩核心代码，初始化页表，idt,gdt
+* init 1号进程，完成user level初始化，比如smp等等
+
+
+
+
