@@ -121,5 +121,52 @@ target取代了runlevel的概念
 * init 1号进程，完成user level初始化，比如smp等等
 
 
+### 第三课
+模块前面说过了，可以动态加载卸载，为系统添加更多的功能
+
+1. /proc文件系统
+伪文件系统，实时变化，一直驻留在内存中，大小为0，修改时间是上次启动的时间
+
+2. 可以通过修改/proc/sys的值来修改内核的参数 系统重启后配置失效！
+
+3. /proc/kcore 具体物理内存的别名，不占用空间，但是有大小，为具体内存+4KB
+
+### 第四课
+1. 进程 程序运行的一个实例
+2. 线程 进程的一个执行流 程序执行的单位
+3. 内核线程
+内核线程是内核的一个clone 仅在内核空间运行 kernel_thread()
+4. 轻量级进程 Linux对现成的实现与支持
+进程与LWP: 一对多映射
+
+5. PID 同一组的LWP具有一个PID, thread group是LWP的集合，对应的PID是第一个LWP的PID
+6. task_struct 进程的描述符
+进程描述符的管理 一共8KB 两个page 包含一个thread_info的struct 以及 内核态的进程堆栈
+
+7. 进程的管理
+通过一个链表管理 list_head存储在task_struct中的tasks字段 prev next分别指向前一个和后一个task_struct 
+RUNNING状态的链表 通过runqueue的机制实现 切分为140个链表，根据不同的runlevel
+
+8. 进程的生成关系
+process 0, 1由内核创建，然后process中会存储内核的生成关系，比如parent 
+
+9. PID的实现
+通过哈希表 pid_hash数组包含四个哈希表以及描述符中对应的字段 pid, tgid, pgrp, session
+通过chaining来解决冲突
+10. 等待队列
+处于TASK_INTERRUPTABLE和TASK_UNINTERRUPTABLE两种类型的process放在wait Queue中
+
+11. 进程的切换机制
+在老版本上硬件切换 a far jump
+新版本上软件切换 一组mov指令
+切换的流程 1. 切换PGD 2. 切换内核态堆栈以及硬件上下文(TSS段)
+
+12. 创建进程
+clone() fork() vfork() 系统调用 
+Copy On Write的机制
+clone() 相比fork()更具有选择性
+
+### 
+
 
 
