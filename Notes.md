@@ -178,7 +178,20 @@ clone() 相比fork()更具有选择性
 7.实时进程有1-99的优先级 实时进程总是处于活动状态，直到遇到切换的条件
 8. 多级调度算法 MLFQ 
 9. CPU具有runqueue结构，作为系统进行调度的根据
-10. 
+10. prio_array_t 结构
+* nr_active 描述进程符的数量
+* bitmap 优先级bitmap
+* queue 140个不同runlevel的list_head
+11. schedule() 直接调用/延迟调用
+12. 通过调度域来实现CPU对runqueue的负载均衡
+13. CFS调度解决的问题：有些进程始终得不到资源，starve
+具体设计：每一个进程具有相同的virtual runtime, sleeping task的优先级提升
+使用红黑树记录任务的运行时间 选择最左边的结点运行 选择的进程从树中移除，更新时间信息
+虚拟时间是相对nice为0的权重的比例值
+通过时钟中断来更新vruntime,判断是否需要rescedule(),从而抛弃了时间片的传统概念
+结构 runqueue->struct rq->struct cfs_eq->struct sched_entity
+调度时机：阻塞操作、TIF位、Wakeups
+
 
 
 
