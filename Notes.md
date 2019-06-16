@@ -253,6 +253,44 @@ CMWQ 高并发性的工作队列
 每CPU变量是在多CPU系统上一种有效的防止同步问题的办法
 6. RCU结构 用来保护由多个CPU读写的结构
 
+### 第八课 对称多处理
+1. SISD, SIMD, MISD, MIMD
+2. SMP中，多个同样的处理器连接到一个共享的内存
+3. 每一个处理器都拥有对IO设备的完全控制权限，每一个处理器被系统平等对待
+4. NUMA 非一致内存访问 引入非本地内存的概念
+5. SMP调度的架构
+* 时分共享 
+* 空分共享
+6. 同步的问题 缓存颠簸 可以通过创建多个锁来解决
+7. SMP机器的启动
+BP带动AP启动 
+在执行BIOS代码时，系统会先屏蔽掉AP的中断
+其他的启动过程与之前类似，注意在start_kernel()的时机我们调用smp_init()初始化AP
+8. 对于SMP的机器，有NPCU个0号进程，但是只有一个init进程
+9. 对于AP来说，不执行start_kernel(),执行init_secondary()以及start_secondary()
+10. Linux内有一个全局变量task[NR_TASKS]，包含所有进程的数组，构成一个doubly linked list, 表头是0号进程
+11. init_task[NR_CPUS],记录了每个CPU对应的0号进程
+12. runqueue_head 所有状态为可运行的进程构成一个链表，表头是runqueue_head
+13. schedule()函数
+* 读取设置局部变量this_cpu
+* 初始化sched_data变量
+* 调用goodness()选择进程
+* 设置sched_data->last_schedule为当前时间
+* 调用switch_to()宏进行进程切换
+* 调用schedule_tail()帮助prev选择一个合适的处理器reschedule_idle()
+prev (timer interrupt) ---> schedule() ----> next
+14. reschedule_idle() 
+* 先检查上一次运行的CPU是否可以使用
+* 找一个合适的CPU
+* 如果没有合适CPU直接返回
+* 如果不为空，发生调度，可能会发送中断
+15. 中断系统的结构
+上层 I/O APIC
+本地 Local APIC
+启动过程中会调用init_IRQ来初始化中断向量
+这个函数会调用set_intr_gate()来注册中断向量
+通过BUILD_SMP_INTERRUPT来完成中断入口函数和中断响应函数的声明
+
 
 
 
