@@ -192,7 +192,11 @@ clone() 相比fork()更具有选择性
 结构 runqueue->struct rq->struct cfs_eq->struct sched_entity
 调度时机：阻塞操作、TIF位、Wakeups
 
-
+### 第六课
+1. 中断，轮询，两种Handler的实现机制
+2. 同步中断，异步中断 同步终端可以理解为异常， 异步中断理解为我们平时认知的中断
+3. fault,trap,abort abort后程序无法继续正常运行
+4. 
 
 
 
