@@ -315,6 +315,29 @@ prev (timer interrupt) ---> schedule() ----> next
 
 
 ### 第十课
+内碎片 已分配的内存利用率低
+外碎片 未分配的内存由于大小无法分配
+1. 物理内存的管理 存储在mem_map这个线性表里
+物理内存 -> 节点 -> 管理区
+每个管理区有对应的zone descriptor
+每个节点有对应的node descriptor
+2. 伙伴内存
+* 两个内存块的大小都为b
+* 物理地址连续
+* 第一个块的第一个页框的物理地址是2*b*2^12的倍数
+3. 伙伴系统的数据结构
+* free_area类型的数组 一共11个元素 对应于1个块大小
+* 存放在管理区描述符的free_area字段
+* free_area数组的第k个元素管理所有大小为2^k的空闲内存块
+* free_list字段是一个doubly linked list的表头，这个链表管理所有大小为2^k个页框的空闲内存区的页描述符
+4. 页框缓存 加速内存页分配请求
+5. slab allocator （内碎片）
+caches -> slab -> page frame(object)
+当缺少空闲的object时，cache中会创建一个新的slab
+当cache中存在过多的空闲object时，会开始释放slab
+6. 一个object描述符包含该slab中下一个空闲object的index
+7. 非连续内存区管理 vm_struct vmalloc() vfree()
+get_vm_area()寻找线性地址中的一个空闲区域 
 ### 第十一课
 
 ### 第十二课
