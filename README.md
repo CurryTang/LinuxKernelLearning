@@ -292,5 +292,36 @@ prev (timer interrupt) ---> schedule() ----> next
 通过BUILD_SMP_INTERRUPT来完成中断入口函数和中断响应函数的声明
 
 
+### 第九课 内存寻址
+1. Logical Address -(SEGMENTATION UNIT)->  Linear Address -(Page Table)-> Physical Address
+2. 段式寻址 
+* 段选择符 Index, TI, RPL
+* 段寄存器 es, ss, data 等等
+3. 段描述符 gdt, ldt, gdtr, ldtr
+4. DPL 用来限制对段式寻址的访问
+5. 
+![](https://cdn-images-1.medium.com/max/1600/0*djxT8AaVKYlutJtS.png)
 
+6. Linux的实现
+每个CPU一个对应的gdt
+
+7. paging 
+关键字：4KB, 32 = 10 + 10 + 12, Two-level hierarchy
+8. extended paging
+4MB super page 10 + 22
+9. PAE 支持64GB的物理内存
+一个页表只有512表项
+10. Linux内核安装在2MB开始的地方
+
+
+### 第十课
+### 第十一课
+
+### 第十二课
+
+### 第十三课
+
+### 第十四课
+
+### 第十五课
 
