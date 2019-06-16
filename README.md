@@ -338,13 +338,93 @@ caches -> slab -> page frame(object)
 6. 一个object描述符包含该slab中下一个空闲object的index
 7. 非连续内存区管理 vm_struct vmalloc() vfree()
 get_vm_area()寻找线性地址中的一个空闲区域 
-### 第十一课
+8. 页替换策略
+主存已满但是需要装入新页， 需要把已在主存的一些页替换出去
+替换算法： 随即替换 FIFO LRU 二次机会算法 clock policy 
+### 第十一课 VFS
+1. 提供统一的接口
+2. user-space library call->system call-> file system -> physical media
+3. superblock/inode/file/dentry
+4. inode object
+* 没有被任何进程引用的索引节点链表
+* 当前被引用的索引节点链表
+* 脏索引节点链表
+5. dentry 目录项对象
+目录项对象被存储在目录项高速缓存中
+6. 进程与文件之间的交互
+* fs 字段
+* files字段
+7. 文件系统类型 
+* filesystem type registration
+* file_system_type 用于已注册的文件系统类型 所有的类型被插入到一个singly linked list中
+8. 安装一个文件系统
+* path_lookup() 查找挂载点的路径名
+* 检查挂载标志
+* do_kern_mount()
+* 终止挂载点路径名查找，返回
+9. 卸载
+* 查找路径名
+* 检查正确性与优先级
+* do_unmount()
+* 减少计数器,返回
+10. 路径查找
+* 分析文件路径名并将其分解为一系列节点
+* 得到nameidata对象
 
+具体步骤：
+* init nd
+* 获取read/write lock
+* 获取已挂载文件系统对象和目录项的地址
+* 将上述两个对象的地址存储在nd中
+* 释放信号量，置零
+* 调用link_path_walk()
+
+11.open()的实现
+* getname()
+* get_unused_fd()
+* file_open()
+* 将fd置为返回对象的地址
+* 返回fd
+
+12. read/write
+* 从fd导出地址
+* 检查flags
+* 检查参数和锁
+* 传输数据
+* 释放文件对象
+* 返回传输的大小
+
+13. close
+* 获取文件地址
+* 将fd置为空
+* 调用file_close()
+* 返回0或者error code
+
+14. 劝告锁/强制锁
+
+
+ 
 ### 第十二课
 
-### 第十三课
+### 第十三课 安卓？？？
+1. 分层架构
+2. ANDROID RUNTIME Dalvik虚拟机
+3. 良好的隔离性
+* 自己独立的进程
+* 自己独立的VM
+* 唯一的Linux用户ID
+Activity/Service/Broadcase/Content Providers
 
-### 第十四课
+### 第十四课 电源管理??????
+1. APM/ACPI 
+2. APM 由 BIOS控制 缺乏平台兼容性
+3. ACPI BIOS和操作系统协同控制 G0, G1, G2,G3,Legacy mode, S1, S2, S3
+sys/power/state sysfs是一个虚拟文件系统
+4. 需要通过唤醒锁请求资源 否则CPU会挂起
+5. AWAKE, NOTIFICATION, SLEEP
+6. 我们可以通过发送请求到PowerManager来获取唤醒锁，把唤醒锁添加到列表中，同时设置电源状态
+7. 预挂起，后唤醒
+8. 电池服务 利用linux的/sys/class/power_supply类，利用uevent机制更新电池状态
 
-### 第十五课
+
 
